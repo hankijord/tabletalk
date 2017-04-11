@@ -1,6 +1,9 @@
-from pprint import pprint
 import time, os 
+from pprint import pprint
 import speech_recognition as sr
+
+# Imports the Google Cloud client library
+from google.cloud import language
 
 # Requires that your env/bin/activate script contains the following line
 # and that the env/credentials.json file exists
@@ -12,6 +15,7 @@ class AudioParser:
     def __init__(self):
         self.recogniser = sr.Recognizer()
         self.microphone = sr.Microphone()
+        self.language_client = language.Client()
 
     # Start listening through microphone
     def start_listening(self):
@@ -33,16 +37,49 @@ class AudioParser:
         # Analyse the audio
         self.callback(self.recogniser, audio)
 
-    def natural_language(self, phrase):
+    # Analyses the keywords of a phrase
+    def analyse_keywords(self, phrase):
+        document = self.language_client.document_from_text(phrase)
+        # sentiment = document.analyze_sentiment().sentiment
+        entity_response = document.analyze_entities()
+
+        # Empty keyword list
         keywords = []
+        for entity in entity_response.entities:
+            print("    Google Natural Language thinks you are talking about '" 
+                    + entity.name + "' which is a " + entity.entity_type)
+            if entity.metadata:
+                print("        - Here's some more useful metadata about '" + entity.name + "': %s" % (entity.metadata))
+            keywords.append(entity.name)
         return keywords
+
+    # Analyses the sentiment of a text phrase
+    def analyse_sentiment(self, phrase):
+        document = self.language_client.document_from_text(phrase)
+        sentiment = document.analyze_sentiment().sentiment
+        percentage = sentiment.magnitude * 100
+        emotion = "neutral"
+        if sentiment.score > 0:
+            emotion = "\033[92m" + "positive" + "\033[0m"
+        elif sentiment.score < 0:
+            emotion = "\033[91m" + "negative" + "\033[0m"
+        else:
+            emotion = "neutral"
+
+        print("    Google thinks what you said was "+str(percentage)+"% "+emotion) 
+        return 
 
     # A callback to analyse the speech to text
     def callback(self, recognizer, audio):
         try:
             results = self.recogniser.recognize_google_cloud(audio)
-            print("Google Cloud Speech thinks you said: " + results)
-            print("Google Natural Language thinks these are the keywords: " + ", ".join(self.natural_language(results)))
+            print("_" * 20)
+            print("")
+            print("Google Cloud Speech thinks you said: '" + results+"'")
+            self.analyse_keywords(results)
+            print("")
+            self.analyse_sentiment(results)
+            print("")
         except sr.UnknownValueError:
             print("Google Cloud Speech could not understand audio")
         except sr.RequestError as e:
