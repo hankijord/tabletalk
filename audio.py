@@ -4,9 +4,7 @@ import speech_recognition as sr
 
 # Requires that your env/bin/activate script contains the following line
 # and that the env/credentials.json file exists
-# eg. export SECRET_CREDENTIALS=$(cat $VIRTUALENV/credentials.json)
-
-GOOGLE_CLOUD_SPEECH_CREDENTIALS = os.environ['SECRET_CREDENTIALS']
+# eg. export GOOGLE_APPLICATION_CREDENTIALS=$VIRTUAL_ENV/credentials.json
 
 # A class to parse audio from either a microphone or file and provide keywords from it
 class AudioParser:
@@ -42,7 +40,7 @@ class AudioParser:
     # A callback to analyse the speech to text
     def callback(self, recognizer, audio):
         try:
-            results = self.recogniser.recognize_google_cloud(audio, credentials_json=GOOGLE_CLOUD_SPEECH_CREDENTIALS)
+            results = self.recogniser.recognize_google_cloud(audio)
             print("Google Cloud Speech thinks you said: " + results)
             print("Google Natural Language thinks these are the keywords: " + ", ".join(self.natural_language(results)))
         except sr.UnknownValueError:
