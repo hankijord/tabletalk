@@ -8,6 +8,8 @@ A DECO3850 project developed at the University of Queensland.
 3. Add this line to the bottom of the `env/bin/activate` script
 
       ```export GOOGLE_APPLICATION_CREDENTIALS=$VIRTUAL_ENV/credentials.json```
+      
+      ```export GOOGLE_API_KEY="MY_API_KEY_HERE"```
  
 4. Activate virtualenv: `source env/bin/activate`
 5. Install requirements: `pip install -r requirements.txt`
