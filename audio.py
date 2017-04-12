@@ -1,9 +1,12 @@
-import time, os 
+import time, os, webbrowser
 from pprint import pprint
 import speech_recognition as sr
 
 # Imports the Google Cloud client library
 from google.cloud import language
+
+# Import the search function from search.py
+from search import searchImages
 
 # Requires that your env/bin/activate script contains the following line
 # and that the env/credentials.json file exists
@@ -15,6 +18,7 @@ class AudioParser:
     def __init__(self):
         self.recogniser = sr.Recognizer()
         self.microphone = sr.Microphone()
+        # Google's Natural Language Client
         self.language_client = language.Client()
 
     # Start listening through microphone
@@ -76,7 +80,11 @@ class AudioParser:
             print("_" * 20)
             print("")
             print("Google Cloud Speech thinks you said: '" + results+"'")
-            self.analyse_keywords(results)
+            keywords = self.analyse_keywords(results)
+            for keyword in keywords:
+                print("Searching for " + keyword + " images.")
+                imageResults = searchImages(keyword)
+                webbrowser.open(imageResults[0])
             print("")
             self.analyse_sentiment(results)
             print("")
@@ -88,6 +96,7 @@ class AudioParser:
 def main():
     audio = AudioParser()  
     audio.start_listening()
+    # listens infinitely
     while True: time.sleep(0.1)
 
 main()
