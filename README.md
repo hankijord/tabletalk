@@ -12,5 +12,6 @@ A DECO3850 project developed at the University of Queensland.
       ```export GOOGLE_API_KEY="MY_API_KEY_HERE"```
  
 4. Activate virtualenv: `source env/bin/activate`
-5. Install requirements: `pip install -r requirements.txt`
-6. Run using `python audio.py`
+5. Install portaudio (required by PyAudio): `brew install portaudio`
+6. Install requirements: `pip install -r requirements.txt`
+7. Run using `python audio.py`
