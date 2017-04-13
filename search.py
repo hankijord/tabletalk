@@ -25,11 +25,11 @@ def searchImages(term):
 # Download the image to img folder
 def downloadImages(imageLink, term):
     # Create img directory if if doesn't exist
-    if not os.path.exists("img/"):
-        os.makedirs("img/")
+    if not os.path.exists("visualisation/images"):
+        os.makedirs("visualisation/images")
 
     # Download images from imageLink, put in img/
-    urllib.urlretrieve(imageLink, "img/" + term + "." + imageLink.split('.')[-1])
+    urllib.urlretrieve(imageLink, "visualisation/images/" + term + "." + imageLink.split('.')[-1])
 
 def main():
     # Looks for the search term from command line argument
