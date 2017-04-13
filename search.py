@@ -10,7 +10,7 @@ class Searcher:
     # Initialisation
     def __init__(self):
         # initialise stuff now
-        self.directory = "visualisation/images" 
+        self.directory = "visualisation/images/" 
 
     # Searches the web for a term and returns JSON
     def searchImages(self, term):
@@ -31,20 +31,21 @@ class Searcher:
         imgLinks = []
         for item in results["items"]:
             imgLinks.append(item["link"])
+        return imgLinks
 
-# Download the image to img folder
-def downloadImages(imageLink, term):
-    # Create img directory if if doesn't exist
-    if not os.path.exists(self.directory):
-		os.makedirs(self.directory)
+    # Download the image to img folder
+    def downloadImages(self, imageLink, term):
+        # Create img directory if if doesn't exist
+        if not os.path.exists(self.directory):
+            os.makedirs(self.directory)
 
-    # Determine the file extension
-    source = urllib.urlopen(imageLink)
-    extension = guess_extension(source.info()['Content-Type'], strict=True)
+        # Determine the file extension
+        source = urllib.urlopen(imageLink)
+        extension = guess_extension(source.info()['Content-Type'], strict=True)
 
-    # Download images from imageLink, put in img/
-    # urllib.urlretrieve(imageLink, self.directory + term + "." + imageLink.split(".")[-1])
-    urllib.urlretrieve(imageLink, self.directory + term + extension)
+        # Download images from imageLink, put in img/
+        # urllib.urlretrieve(imageLink, self.directory + term + "." + imageLink.split(".")[-1])
+        urllib.urlretrieve(imageLink, self.directory + term + extension)
 
 def main():
     searcher = Searcher()
