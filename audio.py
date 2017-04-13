@@ -6,7 +6,7 @@ import speech_recognition as sr
 from google.cloud import language
 
 # Import the search function from search.py
-from search import searchImages, downloadImages
+from search import Searcher 
 
 # Requires that your env/bin/activate script contains the following line
 # and that the env/credentials.json file exists
@@ -72,20 +72,24 @@ class AudioParser:
 
         print("    Google thinks what you said was "+str(percentage)+"% "+emotion) 
         return 
-
+    
+    # Searches for images and downloads due to 
+    def download_images(self, keywords):
+        searcher = Searcher()
+        for keyword in keywords:
+            print("Searching for " + keyword + " image.")
+            imageResults = searcher.searchImages(keyword)
+            searcher.downloadImages(imageResults[0], keyword)
+             
     # A callback to analyse the speech to text
     def callback(self, recognizer, audio):
         try:
             results = self.recogniser.recognize_google_cloud(audio)
             print("_" * 20)
             print("")
-            print("Google Cloud Speech thinks you said: '" + results+"'")
+            print("Google Cloud Speech thinks you said: '" + results +"'")
             keywords = self.analyse_keywords(results)
-            for keyword in keywords:
-                print("Searching for " + keyword + " images.")
-                imageResults = searchImages(keyword)
-                downloadImages(imageResults[0], keyword)
-                
+            self.download_images(keywords) 
             print("")
             self.analyse_sentiment(results)
             print("")
@@ -97,6 +101,7 @@ class AudioParser:
 def main():
     audio = AudioParser()  
     audio.start_listening()
+
     # listens infinitely
     while True: time.sleep(0.1)
 
