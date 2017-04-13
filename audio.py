@@ -6,7 +6,7 @@ import speech_recognition as sr
 from google.cloud import language
 
 # Import the search function from search.py
-from search import searchImages
+from search import searchImages, downloadImages
 
 # Requires that your env/bin/activate script contains the following line
 # and that the env/credentials.json file exists
@@ -84,7 +84,8 @@ class AudioParser:
             for keyword in keywords:
                 print("Searching for " + keyword + " images.")
                 imageResults = searchImages(keyword)
-                webbrowser.open(imageResults[0])
+                downloadImages(imageResults[0], keyword)
+                
             print("")
             self.analyse_sentiment(results)
             print("")
@@ -99,4 +100,5 @@ def main():
     # listens infinitely
     while True: time.sleep(0.1)
 
-main()
+if __name__ == '__main__':
+    main()

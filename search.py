@@ -1,4 +1,5 @@
-import os, pprint, json, webbrowser
+import sys, os, pprint, urllib, json, webbrowser
+
 from googleapiclient.discovery import build
 
 # Searches the web for a term and returns JSON
@@ -20,3 +21,26 @@ def searchImages(term):
         imgLinks.append(item["link"])
 
     return imgLinks
+
+# Download the image to img folder
+def downloadImages(imageLink, term):
+    # Create img directory if if doesn't exist
+    if not os.path.exists("img/"):
+        os.makedirs("img/")
+
+    # Download images from imageLink, put in img/
+    urllib.urlretrieve(imageLink, "img/" + term + "." + imageLink.split('.')[-1])
+
+def main():
+    # Looks for the search term from command line argument
+    for term in sys.argv[1:]:
+        print("Searching for " + term + " images.")
+
+        # Search for images
+        results = searchImages(term)
+
+        # Downloads the images to the img folder
+        downloadImages(results[0], term)
+
+if __name__ == '__main__':
+    main()
