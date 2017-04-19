@@ -1,6 +1,6 @@
 # TableTalk
 An interactive table that enhances your conversations.
-A DECO3850 project developed at the University of Queensland.
+A work-in-progress project developed through the DECO3850 course at the University of Queensland.
 
 ## Setup
 1. Create a virtualenv
