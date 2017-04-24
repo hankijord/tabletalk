@@ -58,35 +58,28 @@ class PicturesApp(App):
         # get any files into images directory
         curdir = dirname(__file__)
         self.currentimages = {'foo','bar'}
+        self.imgList = "images/imgList.txt"
         testpos = 0
-        for filename in glob(join(curdir, 'images', '*')):
-            try:
-                self.currentimages.add(filename)
-                # load the image
-                picture = Picture(source=filename, pos=(100,testpos))
-                # add to the main field
-                root.add_widget(picture)
-                testpos += 100
-            except Exception as e:
-                Logger.exception('Pictures: Unable to load <%s>' % filename)
-
-    def fetch_images(self, *args):
+        self.async_images()
+                    
+    # Processing the text file and displaying them using asynchronous loading
+    def async_images(self, *args):
         root = self.root
-
-        curdir = dirname(__file__)
-        for filename in glob(join(curdir, 'images', '*')):
-            if filename not in self.currentimages:
-                try:
-                    self.currentimages.add(filename)
-                    # load the image
-                    picture = Picture(source=filename, rotation=randint(-100, 100), pos=(randint(0,1000),randint(0,1000)))
-                    # add to the main field
-                    root.add_widget(picture)
-                except Exception as e:
-                    Logger.exception('Pictures: Unable to load <%s>' % filename)
+        
+        with open(self.imgList) as f:
+            for line in f: 
+                url = line.strip()
+                if url not in self.currentimages:
+                    print(url)
+                    try:
+                        self.currentimages.add(url)
+                        picture = Picture(source=url, rotation=randint(-100, 100), pos=(randint(0,1000),randint(0,1000)))
+                        root.add_widget(picture)
+                    except Exception as e:
+                        Logger.exception('Pictures: Unable to load <%s>' % filename)                        
 
     def on_start(self):
-        event = Clock.schedule_interval(self.fetch_images, 0.2)
+        event = Clock.schedule_interval(self.async_images, 0.2)
 
 
     def on_pause(self):
@@ -96,6 +89,7 @@ class PicturesApp(App):
         curdir = dirname(__file__)
         for filename in glob(join(curdir, 'images', '*')):
             os.remove(filename)
+        os.remove(self.imgList)
 
 
 

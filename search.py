@@ -10,7 +10,8 @@ class Searcher:
     # Initialisation
     def __init__(self):
         # initialise stuff now
-        self.directory = "visualisation/images/" 
+        self.directory = "visualisation/images/"
+        self.imgList = "visualisation/images/imgList.txt"
 
     # Searches the web for a term and returns JSON
     def searchImages(self, term):
@@ -46,6 +47,13 @@ class Searcher:
         # Download images from imageLink, put in img/
         # urllib.urlretrieve(imageLink, self.directory + term + "." + imageLink.split(".")[-1])
         urllib.urlretrieve(imageLink, self.directory + term + extension)
+    
+    # Append link to a text file for kivy to handle
+    def appendLink(self, imageLink):
+        # Append imageLink to the file
+        with open(self.imgList, 'a')  as f:
+            f.write('\n' + imageLink)
+        print(imageLink)
 
 def main():
     searcher = Searcher()

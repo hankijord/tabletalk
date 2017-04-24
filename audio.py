@@ -79,7 +79,7 @@ class AudioParser:
         for keyword in keywords:
             print("Searching for " + keyword + " image.")
             imageResults = searcher.searchImages(keyword)
-            searcher.downloadImages(imageResults[0], keyword)
+            searcher.appendLink(imageResults[0])
              
     # A callback to analyse the speech to text
     def callback(self, recognizer, audio):
