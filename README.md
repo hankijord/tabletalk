@@ -2,7 +2,7 @@
 An interactive table that enhances your conversations.
 A work-in-progress project developed through the DECO3850 course at the University of Queensland.
 
-## Setup
+## Audio Setup
 1. Create a virtualenv
 2. Put the Google Cloud Credentials json file (credentials.json) in the virtualenv directory
 3. Add this line to the bottom of the `env/bin/activate` script
@@ -15,3 +15,9 @@ A work-in-progress project developed through the DECO3850 course at the Universi
 5. Install dependencies for OSX (all required by Kivy & portaudio required by PyAudio): `brew install portaudio sdl2 sdl2_image sdl2_ttf sdl2_mixer gstreamer`
 6. Install requirements: `pip install -r requirements.txt`
 7. Run using `python audio.py`
+
+## Visualisation Setup
+1. Follow the guide [here][0].
+2. Run using `python visualisation/main.py`
+
+[0]: https://kivy.org/#download

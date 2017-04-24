@@ -41,3 +41,4 @@ Thumbs.db
 env/
 img/
 visualisation/images/
+*.pyc
