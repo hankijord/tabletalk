@@ -25,7 +25,7 @@ class Searcher:
             cx="017283978921110466818:dwblrst0kxk",
             searchType="image",
             imgType="photo",
-            imgSize="xlarge"
+            imgSize="large"
         ).execute()
 
         # Retrieve img links from the json list data

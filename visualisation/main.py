@@ -59,9 +59,17 @@ class PicturesApp(App):
         curdir = dirname(__file__)
         self.currentimages = {'foo','bar'}
         self.imgList = "images/imgList.txt"
-        testpos = 0
+        self.testpos = 0
+        
+        # create the file if one is not in place
+        with open(self.imgList, 'a') as f:
+            f.write('')
+        
+        # fetch the image address list and display them
         self.async_images()
-                    
+        
+        
+        
     # Processing the text file and displaying them using asynchronous loading
     def async_images(self, *args):
         root = self.root
@@ -73,10 +81,11 @@ class PicturesApp(App):
                     print(url)
                     try:
                         self.currentimages.add(url)
-                        picture = Picture(source=url, rotation=randint(-100, 100), pos=(randint(0,1000),randint(0,1000)))
+                        picture = Picture(source=url, rotation=randint(-15, 15), pos=(0,0))
                         root.add_widget(picture)
+                        self.testpos +=500
                     except Exception as e:
-                        Logger.exception('Pictures: Unable to load <%s>' % filename)                        
+                        Logger.exception('Pictures: Unable to load <%s>' % url)                        
 
     def on_start(self):
         event = Clock.schedule_interval(self.async_images, 0.2)
@@ -86,11 +95,7 @@ class PicturesApp(App):
         return True
 
     def on_stop(self):
-        curdir = dirname(__file__)
-        for filename in glob(join(curdir, 'images', '*')):
-            os.remove(filename)
         os.remove(self.imgList)
-
 
 
 if __name__ == '__main__':

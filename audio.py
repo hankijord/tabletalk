@@ -1,4 +1,4 @@
-import time, os, webbrowser
+import time, os, webbrowser, sys
 from pprint import pprint
 import speech_recognition as sr
 
@@ -25,12 +25,15 @@ class AudioParser:
     def start_listening(self):
         with self.microphone as source:
             self.recogniser.adjust_for_ambient_noise(source)  # we only need to calibrate once, before we start listening
+        
+        print("Listening through microphone..")
     
         # Starts listening in another thread, use self.stop_listening() to stop
         self.stop_listening = self.recogniser.listen_in_background(self.microphone, self.callback)
 
     # Analyse audio file for test
     def analyse_audio_file(self, audioFileName):
+        print("analyse_audio_file called")
         # Join the file name to the directory path
         audioPath = path.join(path.dirname(path.realpath(__file__)), audioFileName)
 
@@ -84,19 +87,22 @@ class AudioParser:
     # A callback to analyse the speech to text
     def callback(self, recognizer, audio):
         try:
-            results = self.recogniser.recognize_google_cloud(audio)
+            self.results = self.recogniser.recognize_google_cloud(audio)
             print("_" * 20)
             print("")
-            print("Google Cloud Speech thinks you said: '" + results +"'")
-            keywords = self.analyse_keywords(results)
-            self.download_images(keywords) 
-            print("")
-            self.analyse_sentiment(results)
-            print("")
+            print("Google Cloud Speech thinks you said: \n'" + self.results +"'\033")
+            self.aftermath(self.results)
         except sr.UnknownValueError:
-            print("Google Cloud Speech could not understand audio")
+            print("Google Cloud Speech could not understand audio.\nRetrying..")
         except sr.RequestError as e:
             print("Could not request results from Google Cloud Speech service; {0}".format(e))
+    
+    def aftermath(self, results):
+        keywords = self.analyse_keywords(results)
+        self.download_images(keywords) 
+        print("")
+        self.analyse_sentiment(results)
+        print("")
 
 def main():
     audio = AudioParser()  
