@@ -8,6 +8,12 @@ from google.cloud import language
 # Import the search function from search.py
 from search import Searcher 
 
+# import thread for threading
+import thread
+
+# import urllib for code checking
+import urllib
+
 # Requires that your env/bin/activate script contains the following line
 # and that the env/credentials.json file exists
 # eg. export GOOGLE_APPLICATION_CREDENTIALS=$VIRTUAL_ENV/credentials.json
@@ -29,7 +35,7 @@ class AudioParser:
         print("Listening through microphone..")
     
         # Starts listening in another thread, use self.stop_listening() to stop
-        self.stop_listening = self.recogniser.listen_in_background(self.microphone, self.callback)
+        self.stop_listening = self.recogniser.listen_in_background(self.microphone, self.thread_callback)
 
     # Analyse audio file for test
     def analyse_audio_file(self, audioFileName):
@@ -82,10 +88,15 @@ class AudioParser:
         for keyword in keywords:
             print("Searching for " + keyword + " image.")
             imageResults = searcher.searchImages(keyword)
-            if self.HTTP_code_check(imageResults):
+            if self.HTTP_code_check(imageResults[0]):
+                print('appending link...')
                 searcher.appendLink(imageResults[0])
             else:
                 pass
+             
+    # Threaded callback
+    def thread_callback(self, recognizer, audio):
+        thread.start_new_thread(self.callback, (recognizer,audio))
              
     # A callback to analyse the speech to text
     def callback(self, recognizer, audio):
@@ -96,20 +107,28 @@ class AudioParser:
             print("Google Cloud Speech thinks you said: \n'" + self.results +"'\033")
             self.aftermath(self.results)
         except sr.UnknownValueError:
-            print("Google Cloud Speech could not understand audio.\nRetrying..")
+            print("Google Cloud Speech could not understand audio.")
         except sr.RequestError as e:
             print("Could not request results from Google Cloud Speech service; {0}".format(e))
     
     # Checks whether URL is valid
     def HTTP_code_check(self, url):
-        try:
-            a = urllib.urlopen(urltocheck)
-            if a.getcode() == 200:
-                return True
-            else:
-                return False
-        except:
+        print('Checking HTTP Code...')
+        print(url)
+        #try:
+        a = urllib.urlopen(url)
+        print (a.getcode())
+        if a.getcode() == 200:
+            print ('link OK!')
+            return True
+        else:
+            print ('link HTTPCode fucked')
             return False
+        '''
+        except:
+            print ('link fucked')
+            return False
+        '''
     
     def aftermath(self, results):
         keywords = self.analyse_keywords(results)
