@@ -82,7 +82,10 @@ class AudioParser:
         for keyword in keywords:
             print("Searching for " + keyword + " image.")
             imageResults = searcher.searchImages(keyword)
-            searcher.appendLink(imageResults[0])
+            if self.HTTP_code_check(imageResults):
+                searcher.appendLink(imageResults[0])
+            else:
+                pass
              
     # A callback to analyse the speech to text
     def callback(self, recognizer, audio):
@@ -96,6 +99,17 @@ class AudioParser:
             print("Google Cloud Speech could not understand audio.\nRetrying..")
         except sr.RequestError as e:
             print("Could not request results from Google Cloud Speech service; {0}".format(e))
+    
+    # Checks whether URL is valid
+    def HTTP_code_check(self, url):
+        try:
+            a = urllib.urlopen(urltocheck)
+            if a.getcode() == 200:
+                return True
+            else:
+                return False
+        except:
+            return False
     
     def aftermath(self, results):
         keywords = self.analyse_keywords(results)
