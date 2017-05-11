@@ -10,8 +10,8 @@ class Searcher:
     # Initialisation
     def __init__(self):
         # initialise stuff now
-        self.directory = "visualisation/images/"
-        self.imgList = "visualisation/images/imgList.txt"
+        self.directory = "images/"
+        self.imgList = "images/imgList.txt"
 
     # Searches the web for a term and returns JSON
     def searchImages(self, term):

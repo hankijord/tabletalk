@@ -36,6 +36,13 @@ from kivy.uix.scatter import Scatter
 from kivy.properties import StringProperty
 from kivy.clock import Clock
 
+from audio import AudioParser
+
+# The list of mic names. These are the exact input names in System Preferences
+# If you want to get the list of input names, run audio.py
+MIC_NAMES = ["Built-in Microph"]
+# MIC_NAMES = ["MOTU Mic 1", "MOTU Mic 2", "MOTU Mic 3", "MOTU Mic 4"]
+
 class Picture(Scatter):
     '''Picture is the class that will show the image with a white border and a
     shadow. They are nothing here because almost everything is inside the
@@ -51,7 +58,6 @@ class Picture(Scatter):
 class PicturesApp(App):
 
     def build(self):
-
         # the root is created in pictures.kv
         root = self.root
 
@@ -89,14 +95,24 @@ class PicturesApp(App):
 
     def on_start(self):
         event = Clock.schedule_interval(self.async_images, 0.2)
-
-
+        self.audioParsers = self.create_audio_parsers(MIC_NAMES)
+                
     def on_pause(self):
         return True
 
     def on_stop(self):
         os.remove(self.imgList)
 
+    # Returns an array of audio parsers 
+    def create_audio_parsers(self, deviceList):
+        audioParsers = []
+
+        # Iterates through list of device names we want to use
+        for name in deviceList:
+            parser = AudioParser(name)
+            parser.start_listening()
+            audioParsers.append(parser)
+        return audioParsers
 
 if __name__ == '__main__':
     PicturesApp().run()

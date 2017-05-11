@@ -1,4 +1,4 @@
-import time, os, webbrowser, sys
+import time, os, webbrowser, sys, pyaudio
 from pprint import pprint
 import speech_recognition as sr
 
@@ -14,10 +14,16 @@ from search import Searcher
 
 # A class to parse audio from either a microphone or file and provide keywords from it
 class AudioParser:
-    # Initialise with optional audio file for testing
-    def __init__(self):
+    # Initialise with microphone name 
+    def __init__(self, inputName):
         self.recogniser = sr.Recognizer()
-        self.microphone = sr.Microphone()
+
+        # Initiates a microphone from its name 
+        for i, mic_name in enumerate(sr.Microphone.list_microphone_names()):
+            if mic_name == inputName:
+                self.microphone = sr.Microphone(i)
+                self.name = mic_name
+
         # Google's Natural Language Client
         self.language_client = language.Client()
 
@@ -26,24 +32,11 @@ class AudioParser:
         with self.microphone as source:
             self.recogniser.adjust_for_ambient_noise(source)  # we only need to calibrate once, before we start listening
         
-        print("Listening through microphone..")
+        print("Started listening through " + self.name + "...")
     
         # Starts listening in another thread, use self.stop_listening() to stop
         self.stop_listening = self.recogniser.listen_in_background(self.microphone, self.callback)
-
-    # Analyse audio file for test
-    def analyse_audio_file(self, audioFileName):
-        print("analyse_audio_file called")
-        # Join the file name to the directory path
-        audioPath = path.join(path.dirname(path.realpath(__file__)), audioFileName)
-
-        # Use the audio file as the source
-        with sr.AudioFile(audioPath) as source:
-            audio = self.recogniser.record(source)
-
-        # Analyse the audio
-        self.callback(self.recogniser, audio)
-
+    
     # Analyses the keywords of a phrase
     def analyse_keywords(self, phrase):
         document = self.language_client.document_from_text(phrase)
@@ -53,10 +46,10 @@ class AudioParser:
         # Empty keyword list
         keywords = []
         for entity in entity_response.entities:
-            print("    Google Natural Language thinks you are talking about '" 
+            print(self.name + ": Google Natural Language thinks you are talking about '" 
                     + entity.name + "' which is a " + entity.entity_type)
             if entity.metadata:
-                print("        - Here's some more useful metadata about '" + entity.name + "': %s" % (entity.metadata))
+                print(self.name + ":        - Here's some more useful metadata about '" + entity.name + "': %s" % (entity.metadata))
             keywords.append(entity.name)
         return keywords
 
@@ -73,14 +66,14 @@ class AudioParser:
         else:
             emotion = "neutral"
 
-        print("    Google thinks what you said was "+str(percentage)+"% "+emotion) 
+        print(self.name + ": Google thinks what you said was "+str(percentage)+"% "+emotion) 
         return 
     
     # Searches for images and downloads due to 
     def download_images(self, keywords):
         searcher = Searcher()
         for keyword in keywords:
-            print("Searching for " + keyword + " image.")
+            print(self.name + ": Searching for " + keyword + " image.")
             imageResults = searcher.searchImages(keyword)
             searcher.appendLink(imageResults[0])
              
@@ -90,13 +83,15 @@ class AudioParser:
             self.results = self.recogniser.recognize_google_cloud(audio)
             print("_" * 20)
             print("")
-            print("Google Cloud Speech thinks you said: \n'" + self.results +"'\033")
+            print(self.name + ": Google Cloud Speech thinks you said: \n'" + self.results +"'\033")
             self.aftermath(self.results)
         except sr.UnknownValueError:
-            print("Google Cloud Speech could not understand audio.\nRetrying..")
+            print(self.name + ": Google Cloud Speech could not understand audio.")
+            print(self.name + ": Retrying...")
         except sr.RequestError as e:
-            print("Could not request results from Google Cloud Speech service; {0}".format(e))
+            print(self.name + ": Could not request results from Google Cloud Speech service; {0}".format(e))
     
+    # Called after    
     def aftermath(self, results):
         keywords = self.analyse_keywords(results)
         self.download_images(keywords) 
@@ -104,8 +99,15 @@ class AudioParser:
         self.analyse_sentiment(results)
         print("")
 
+def print_input_list():
+    print "Input List:"
+    print "\n".join(sr.Microphone.list_microphone_names())
+    print ""
+
 def main():
-    audio = AudioParser()  
+    print_input_list()
+
+    audio = AudioParser("Built-in Microph")  
     audio.start_listening()
 
     # listens infinitely
