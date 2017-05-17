@@ -41,8 +41,26 @@ class AudioParser:
         print("Started listening through " + self.name + "...")
     
         # Starts listening in another thread, use self.stop_listening() to stop
-        self.stop_listening = self.recogniser.listen_in_background(self.microphone, self.thread_callback)
+<<<<<<< HEAD:visualisation/audio.py
+        self.stop_listening = self.recogniser.listen_in_background(self.microphone, self.callback)
     
+=======
+        self.stop_listening = self.recogniser.listen_in_background(self.microphone, self.thread_callback)
+
+    # Analyse audio file for test
+    def analyse_audio_file(self, audioFileName):
+        print("analyse_audio_file called")
+        # Join the file name to the directory path
+        audioPath = path.join(path.dirname(path.realpath(__file__)), audioFileName)
+
+        # Use the audio file as the source
+        with sr.AudioFile(audioPath) as source:
+            audio = self.recogniser.record(source)
+
+        # Analyse the audio
+        self.callback(self.recogniser, audio)
+
+>>>>>>> eccf0955be4aa38667eecea17d6716c541e6140d:audio.py
     # Analyses the keywords of a phrase
     def analyse_keywords(self, phrase):
         document = self.language_client.document_from_text(phrase)
@@ -83,7 +101,7 @@ class AudioParser:
             imageResults = searcher.searchImages(keyword)
             if self.HTTP_code_check(imageResults[0]):
                 print('appending link...')
-                searcher.appendLink(keyword, imageResults[0])
+                searcher.appendLink(imageResults[0])
             else:
                 pass
              
@@ -97,14 +115,21 @@ class AudioParser:
             self.results = self.recogniser.recognize_google_cloud(audio)
             print("_" * 20)
             print("")
-            print(self.name + ": Google Cloud Speech thinks you said: '" + self.results +"'\033")
+            print(self.name + ": Google Cloud Speech thinks you said: \n'" + self.results +"'\033")
             self.aftermath(self.results)
         except sr.UnknownValueError:
+<<<<<<< HEAD:visualisation/audio.py
             print(self.name + ": Google Cloud Speech could not understand audio.")
             print(self.name + ": Retrying...")
+=======
+            print("Google Cloud Speech could not understand audio.")
+>>>>>>> eccf0955be4aa38667eecea17d6716c541e6140d:audio.py
         except sr.RequestError as e:
             print(self.name + ": Could not request results from Google Cloud Speech service; {0}".format(e))
     
+<<<<<<< HEAD:visualisation/audio.py
+    # Called after    
+=======
     # Checks whether URL is valid
     def HTTP_code_check(self, url):
         print('Checking HTTP Code...')
@@ -124,6 +149,7 @@ class AudioParser:
             return False
         '''
     
+>>>>>>> eccf0955be4aa38667eecea17d6716c541e6140d:audio.py
     def aftermath(self, results):
         keywords = self.analyse_keywords(results)
         self.download_images(keywords) 

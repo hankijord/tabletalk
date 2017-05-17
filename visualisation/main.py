@@ -41,6 +41,7 @@ from audio import AudioParser
 # The list of mic names. These are the exact input names in System Preferences
 # If you want to get the list of input names, run audio.py
 MIC_NAMES = ["Built-in Microph"]
+# MIC_NAMES = ["MOTU Mic 1", "MOTU Mic 2"]
 # MIC_NAMES = ["MOTU Mic 1", "MOTU Mic 2", "MOTU Mic 3", "MOTU Mic 4"]
 
 class Picture(Scatter):
@@ -53,7 +54,24 @@ class Picture(Scatter):
     '''
 
     source = StringProperty(None)
+    topic = StringProperty(None)
 
+    '''
+    def __init__(self, **kwargs):
+        super(Picture, self).__init__(**kwargs)
+        self.bind(colour=self.redraw)
+    
+    # Override image touch
+    def on_touch_down(self, touch):
+        if self.collide_point(touch.x, touch.y):
+            print "touched image"
+            self.colour = (1,0,1,1)
+
+    def redraw(self, *args):
+        self.canvas.clear()
+        with self.canvas:
+            Color(self.colour)
+    '''
 
 class PicturesApp(App):
 
@@ -73,21 +91,23 @@ class PicturesApp(App):
         
         # fetch the image address list and display them
         self.async_images()
-        
-        
+
+        # Create audio parser for each mic
+        self.audioParsers = self.create_audio_parsers(MIC_NAMES)
         
     # Processing the text file and displaying them using asynchronous loading
     def async_images(self, *args):
         root = self.root
         
         with open(self.imgList) as f:
-            for line in f: 
-                url = line.strip()
+            for line in f:
+                currentLine = line.split("|") # '|' is not used in URLs
+                topic = currentLine[0]
+                url = currentLine[1]
                 if url not in self.currentimages:
-                    print(url)
                     try:
                         self.currentimages.add(url)
-                        picture = Picture(source=url, rotation=randint(-15, 15), pos=(0,0))
+                        picture = Picture(source=url, topic=topic, rotation=randint(-15, 15), pos=(0,0))
                         root.add_widget(picture)
                         self.testpos +=500
                     except Exception as e:
@@ -95,7 +115,6 @@ class PicturesApp(App):
 
     def on_start(self):
         event = Clock.schedule_interval(self.async_images, 0.2)
-        self.audioParsers = self.create_audio_parsers(MIC_NAMES)
                 
     def on_pause(self):
         return True

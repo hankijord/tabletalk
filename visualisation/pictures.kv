@@ -22,8 +22,6 @@ FloatLayout:
             color: (1, 1, 1, .8)
             text: 'TableTalk Prototype'
 
-
-
 <Picture>:
     # each time a picture is created, the image can delay the loading
     # as soon as the image is loaded, ensure that the center is changed
@@ -33,7 +31,6 @@ FloatLayout:
     size_hint: None, None
 
     AsyncImage:
-
         id: image
         source: root.source
 
@@ -43,12 +40,13 @@ FloatLayout:
         # add shadow background
         canvas.before:
             Color:
-                rgba: 1,1,1,1
+                rgba: (1,1,1,1) 
             BorderImage:
                 source: 'shadow32.png'
                 border: (36,36,36,36)
                 size:(self.width+72, self.height+72)
                 pos: (-36,-36)
-
-
-
+    Label:
+        size: self.texture_size
+        color: (0, 0, 0, 1)
+        text: root.topic
