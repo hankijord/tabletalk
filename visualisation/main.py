@@ -34,7 +34,9 @@ from kivy.app import App
 from kivy.logger import Logger
 from kivy.uix.scatter import Scatter
 from kivy.properties import StringProperty
+from kivy.properties import ObjectProperty
 from kivy.clock import Clock
+from kivy.uix.button import Button
 
 from audio import AudioParser
 
@@ -55,6 +57,7 @@ class Picture(Scatter):
 
     source = StringProperty(None)
     topic = StringProperty(None)
+    delete = ObjectProperty(None)
 
     '''
     def __init__(self, **kwargs):
@@ -107,12 +110,17 @@ class PicturesApp(App):
                 if url not in self.currentimages:
                     try:
                         self.currentimages.add(url)
-                        picture = Picture(source=url, topic=topic, rotation=randint(-15, 15), pos=(0,0))
+                        picture = Picture(source=url, topic=topic, rotation=randint(-15, 15), pos=(0,0), delete=self.remove_picture)
                         root.add_widget(picture)
                         self.testpos +=500
                     except Exception as e:
-                        Logger.exception('Pictures: Unable to load <%s>' % url)                        
-
+                        Logger.exception('Pictures: Unable to load <%s>' % url)
+                        
+    def remove_picture(self, widget):
+        # TODO fix button visual
+        root = self.root
+        root.remove_widget(widget)
+    
     def on_start(self):
         event = Clock.schedule_interval(self.async_images, 0.2)
                 

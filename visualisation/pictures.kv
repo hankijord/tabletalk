@@ -50,3 +50,10 @@ FloatLayout:
         size: self.texture_size
         color: (0, 0, 0, 1)
         text: root.topic
+		
+	Button:
+		text: 'x'
+		font_size: 32
+		size: self.texture_size
+		color: (0,0,0,0)
+		on_press: root.delete(widget=root)
