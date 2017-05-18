@@ -12,7 +12,7 @@ class Searcher:
         # initialise stuff now
         self.directory = "images/"
         self.imgList = "images/imgList.txt"
-        self.memeMode = false
+        self.memeMode = False
         # self.gifMode = false
 
     # Searches the web for a term and returns JSON
@@ -54,10 +54,10 @@ class Searcher:
         urllib.urlretrieve(imageLink, self.directory + term + extension)
     
     # Append link to a text file for kivy to handle
-    def appendLink(self, topic, imageLink):
+    def appendLink(self, topic, sentiment, imageLink):
         # Append imageLink to the file
         with open(self.imgList, 'a')  as f:
-            f.write(topic + "|" + imageLink + "\n")
+            f.write(topic + "|" + str(sentiment) + "|" + imageLink + "\n")
         print(imageLink)
 
 def main():

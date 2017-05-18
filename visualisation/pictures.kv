@@ -40,7 +40,7 @@ FloatLayout:
         # add shadow background
         canvas.before:
             Color:
-                rgba: (1,1,1,1) 
+                rgba: (1, 1, 1, 1) 
             BorderImage:
                 source: 'shadow32.png'
                 border: (36,36,36,36)
@@ -49,4 +49,4 @@ FloatLayout:
     Label:
         size: self.texture_size
         color: (0, 0, 0, 1)
-        text: root.topic
+        text: root.topic + ": " + root.sentiment

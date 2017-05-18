@@ -34,6 +34,7 @@ from kivy.app import App
 from kivy.logger import Logger
 from kivy.uix.scatter import Scatter
 from kivy.properties import StringProperty
+from kivy.properties import NumericProperty 
 from kivy.clock import Clock
 
 from audio import AudioParser
@@ -55,22 +56,19 @@ class Picture(Scatter):
 
     source = StringProperty(None)
     topic = StringProperty(None)
-
+    sentiment = StringProperty(None) 
+    # red = NumericProperty(None)
+    # green = NumericProperty(None)
     '''
     def __init__(self, **kwargs):
         super(Picture, self).__init__(**kwargs)
-        self.bind(colour=self.redraw)
-    
-    # Override image touch
-    def on_touch_down(self, touch):
-        if self.collide_point(touch.x, touch.y):
-            print "touched image"
-            self.colour = (1,0,1,1)
-
-    def redraw(self, *args):
-        self.canvas.clear()
-        with self.canvas:
-            Color(self.colour)
+        sentiment = int(self.sentiment)
+        if sentiment > 0:
+            green = sentiment
+            red = 0.0
+        else: 
+            red = sentiment
+            green = 0.0
     '''
 
 class PicturesApp(App):
@@ -103,11 +101,12 @@ class PicturesApp(App):
             for line in f:
                 currentLine = line.split("|") # '|' is not used in URLs
                 topic = currentLine[0]
-                url = currentLine[1]
+                sentiment = currentLine[1]
+                url = currentLine[2]
                 if url not in self.currentimages:
                     try:
                         self.currentimages.add(url)
-                        picture = Picture(source=url, topic=topic, rotation=randint(-15, 15), pos=(0,0))
+                        picture = Picture(source=url, topic=topic, sentiment=sentiment, rotation=randint(-15, 15), pos=(0,0))
                         root.add_widget(picture)
                         self.testpos +=500
                     except Exception as e:

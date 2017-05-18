@@ -73,17 +73,16 @@ class AudioParser:
             emotion = "neutral"
 
         print(self.name + ": Google thinks what you said was "+str(percentage)+"% "+emotion) 
-        return 
+        return sentiment.score 
     
     # Searches for images and downloads due to 
-    def download_images(self, keywords):
+    def download_images(self, keywords, sentiment):
         searcher = Searcher()
         for keyword in keywords:
             print(self.name + ": Searching for " + keyword + " image.")
             imageResults = searcher.searchImages(keyword)
             if self.HTTP_code_check(imageResults[0]):
-                print('appending link...')
-                searcher.appendLink(keyword, imageResults[0])
+                searcher.appendLink(keyword, sentiment, imageResults[0])
             else:
                 pass
              
@@ -126,10 +125,8 @@ class AudioParser:
     
     def aftermath(self, results):
         keywords = self.analyse_keywords(results)
-        self.download_images(keywords) 
-        print("")
-        self.analyse_sentiment(results)
-        print("")
+        sentiment = self.analyse_sentiment(results)
+        self.download_images(keywords, sentiment) 
 
 def print_input_list():
     print "Input List:"
