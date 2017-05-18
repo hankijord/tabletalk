@@ -42,9 +42,9 @@ from audio import AudioParser
 
 # The list of mic names. These are the exact input names in System Preferences
 # If you want to get the list of input names, run audio.py
-MIC_NAMES = ["Built-in Microph"]
+# MIC_NAMES = ["Built-in Microph"]
 # MIC_NAMES = ["MOTU Mic 1", "MOTU Mic 2"]
-# MIC_NAMES = ["MOTU Mic 1", "MOTU Mic 2", "MOTU Mic 3", "MOTU Mic 4"]
+MIC_NAMES = ["MOTU Mic 1", "MOTU Mic 2", "MOTU Mic 3", "MOTU Mic 4"]
 
 class Picture(Scatter):
     '''Picture is the class that will show the image with a white border and a
