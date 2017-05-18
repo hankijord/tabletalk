@@ -47,13 +47,17 @@ FloatLayout:
                 size:(self.width+72, self.height+72)
                 pos: (-36,-36)
     Label:
-        size: self.texture_size
+        text_size: self.size
+        size: (root.width, 50)
+        pos: (10, 10) 
         color: (0, 0, 0, 1)
-        text: root.topic + ": " + root.sentiment
+        text: root.keyword + ", " + root.sentiment + ", " + root.mic
 		
 	Button:
 		text: 'x'
-		font_size: 32
+		font_size: 48
 		size: self.texture_size
-		color: (0,0,0,0)
+        background_color: (1, 0, 0, 1)
+		color: (0, 0, 0, 1)
 		on_press: root.delete(widget=root)
+        pos: (0, root.height - self.height)
