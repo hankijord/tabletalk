@@ -125,6 +125,7 @@ class AudioParser:
         '''
     
     def aftermath(self, results):
+        print("aftermath called")
         keywords = self.analyse_keywords(results)
         self.download_images(keywords) 
         print("")

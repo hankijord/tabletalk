@@ -12,7 +12,7 @@ class Searcher:
         # initialise stuff now
         self.directory = "images/"
         self.imgList = "images/imgList.txt"
-        self.memeMode = false
+        self.memeMode = False
         # self.gifMode = false
 
     # Searches the web for a term and returns JSON
