@@ -108,8 +108,6 @@ class PicturesApp(App):
     def on_stop(self):
         for parser in self.audioParsers:
             parser.stop_listening()
-        os.remove(self.imgList)
-
     # Returns an array of audio parsers 
     def create_audio_parsers(self, deviceList):
         audioParsers = []

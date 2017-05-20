@@ -99,20 +99,17 @@ class AudioParser:
     def HTTP_code_check(self, url):
         print('Checking HTTP Code...')
         print(url)
-        #try:
-        a = urllib.urlopen(url)
-        print (a.getcode())
-        if a.getcode() == 200:
-            print ('link OK!')
-            return True
-        else:
-            print ('link HTTPCode fucked')
-            return False
-        '''
+        try:
+            a = urllib.urlopen(url)
+            if a.getcode() == 200:
+                print ('link OK!')
+                return True
+            else:
+                print ('link HTTPCode fucked')
+                return False
         except:
             print ('link fucked')
             return False
-        '''
     
     def aftermath(self, results):
         keywords = self.analyse_keywords(results)
@@ -121,8 +118,9 @@ class AudioParser:
         searcher = Searcher()
         for keyword in keywords:
             imageResults = searcher.searchImages(keyword)
-            if self.HTTP_code_check(imageResults[0]):
-                url = imageResults[0]
+            imageResults = imageResults[random.randrange(9)]
+            if self.HTTP_code_check(imageResults):
+                url = imageResults
                 self.completionFunction(self.name, keyword, sentiment, url)
             else:
                 pass
@@ -134,8 +132,8 @@ def print_input_list():
 
 def main():
     print_input_list()
-
     audio = AudioParser("Built-in Microph")  
+    
     audio.start_listening()
 
     # listens infinitely
