@@ -42,7 +42,7 @@ from audio import AudioParser
 
 # The list of mic names. These are the exact input names in System Preferences
 # If you want to get the list of input names, run audio.py
-# MIC_NAMES = ["Built-in Microph"]
+
 # MIC_NAMES = ["MOTU Mic 1", "MOTU Mic 2"]
 MIC_NAMES = ["MOTU Mic 1", "MOTU Mic 2", "MOTU Mic 3", "MOTU Mic 4"]
 
@@ -92,12 +92,6 @@ class PicturesApp(App):
         with open(self.imgList, 'a') as f:
             f.write('')
         
-        # fetch the image address list and display them
-        self.async_images()
-
-        # Create audio parser for each mic
-        self.audioParsers = self.create_audio_parsers(MIC_NAMES)
-        
     # Processing the text file and displaying them using asynchronous loading
     def async_images(self, *args):
         root = self.root
@@ -123,6 +117,12 @@ class PicturesApp(App):
     
     def on_start(self):
         event = Clock.schedule_interval(self.async_images, 0.2)
+        
+        # fetch the image address list and display them
+        # self.async_images()
+
+        # Create audio parser for each mic
+        self.audioParsers = self.create_audio_parsers(MIC_NAMES)
                 
     def on_pause(self):
         return True
