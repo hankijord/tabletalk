@@ -20,9 +20,10 @@ import urllib
 
 # A class to parse audio from either a microphone or file and provide keywords from it
 class AudioParser:
-    # Initialise with microphone name 
-    def __init__(self, inputName):
+    # Initialise with microphone name & completion function 
+    def __init__(self, inputName, completionFunction):
         self.recogniser = sr.Recognizer()
+        self.completionFunction = completionFunction
 
         # Initiates a microphone from its name 
         for i, mic_name in enumerate(sr.Microphone.list_microphone_names()):
@@ -41,8 +42,13 @@ class AudioParser:
         print("Started listening through " + self.name + "...")
     
         # Starts listening in another thread, use self.stop_listening() to stop
-        self.stop_listening = self.recogniser.listen_in_background(self.microphone, self.thread_callback)
+        self.stop_listening = self.recogniser.listen_in_background(self.microphone, self.callback)
     
+    # Used to recalibrate the microphone for ambient noise, listens to ambient noise for 1 second
+    def recalibrate_ambient(self): 
+        with self.microphone as source:
+            self.recogniser.adjust_for_ambient_noise(source)
+
     # Analyses the keywords of a phrase
     def analyse_keywords(self, phrase):
         document = self.language_client.document_from_text(phrase)
@@ -73,24 +79,8 @@ class AudioParser:
             emotion = "neutral"
 
         print(self.name + ": Google thinks what you said was "+str(percentage)+"% "+emotion) 
-        return 
+        return sentiment.score 
     
-    # Searches for images and downloads due to 
-    def download_images(self, keywords):
-        searcher = Searcher()
-        for keyword in keywords:
-            print(self.name + ": Searching for " + keyword + " image.")
-            imageResults = searcher.searchImages(keyword)
-            if self.HTTP_code_check(imageResults[0]):
-                print('appending link...')
-                searcher.appendLink(keyword, imageResults[0])
-            else:
-                pass
-             
-    # Threaded callback
-    def thread_callback(self, recognizer, audio):
-        thread.start_new_thread(self.callback, (recognizer,audio))
-             
     # A callback to analyse the speech to text
     def callback(self, recognizer, audio):
         try:
@@ -125,13 +115,18 @@ class AudioParser:
         '''
     
     def aftermath(self, results):
-        print("aftermath called")
         keywords = self.analyse_keywords(results)
-        self.download_images(keywords) 
-        print("")
-        self.analyse_sentiment(results)
-        print("")
-
+        sentiment = self.analyse_sentiment(results)
+        
+        searcher = Searcher()
+        for keyword in keywords:
+            imageResults = searcher.searchImages(keyword)
+            if self.HTTP_code_check(imageResults[0]):
+                url = imageResults[0]
+                self.completionFunction(self.name, keyword, sentiment, url)
+            else:
+                pass
+        
 def print_input_list():
     print "Input List:"
     print "\n".join(sr.Microphone.list_microphone_names())

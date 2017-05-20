@@ -34,8 +34,9 @@ from kivy.app import App
 from kivy.logger import Logger
 from kivy.uix.scatter import Scatter
 from kivy.properties import StringProperty
+from kivy.properties import NumericProperty
 from kivy.properties import ObjectProperty
-from kivy.clock import Clock
+from kivy.clock import Clock, mainthread
 from kivy.uix.button import Button
 
 from audio import AudioParser
@@ -43,6 +44,7 @@ from audio import AudioParser
 # The list of mic names. These are the exact input names in System Preferences
 # If you want to get the list of input names, run audio.py
 
+MIC_NAMES = ["Built-in Microph"]
 # MIC_NAMES = ["MOTU Mic 1", "MOTU Mic 2"]
 MIC_NAMES = ["MOTU Mic 1", "MOTU Mic 2", "MOTU Mic 3", "MOTU Mic 4"]
 
@@ -56,78 +58,56 @@ class Picture(Scatter):
     '''
 
     source = StringProperty(None)
-    topic = StringProperty(None)
-    delete = ObjectProperty(None)
+    keyword = StringProperty(None)
+    delete = ObjectProperty(None)	
+    sentiment = StringProperty(None)
+    mic = StringProperty(None)
 
     '''
     def __init__(self, **kwargs):
         super(Picture, self).__init__(**kwargs)
-        self.bind(colour=self.redraw)
-    
-    # Override image touch
-    def on_touch_down(self, touch):
-        if self.collide_point(touch.x, touch.y):
-            print "touched image"
-            self.colour = (1,0,1,1)
-
-    def redraw(self, *args):
-        self.canvas.clear()
-        with self.canvas:
-            Color(self.colour)
+        sentiment = int(self.sentiment)
+        if sentiment > 0:
+            green = sentiment
+            red = 0.0
+        else: 
+            red = sentiment
+            green = 0.0
     '''
 
 class PicturesApp(App):
-
     def build(self):
-        # the root is created in pictures.kv
-        root = self.root
+        # Create audio parser for each mic
+        self.audioParsers = self.create_audio_parsers(MIC_NAMES)
+        # Holds the Picture objects
+        self.pictures = []
+        self.load_pictures('test_data.txt')
 
-        # get any files into images directory
-        curdir = dirname(__file__)
-        self.currentimages = {'foo','bar'}
-        self.imgList = "images/imgList.txt"
-        self.testpos = 0
-        
-        # create the file if one is not in place
-        with open(self.imgList, 'a') as f:
-            f.write('')
-        
-    # Processing the text file and displaying them using asynchronous loading
-    def async_images(self, *args):
-        root = self.root
-        
-        with open(self.imgList) as f:
-            for line in f:
-                currentLine = line.split("|") # '|' is not used in URLs
-                topic = currentLine[0]
-                url = currentLine[1]
-                if url not in self.currentimages:
-                    try:
-                        self.currentimages.add(url)
-                        picture = Picture(source=url, topic=topic, rotation=randint(-15, 15), pos=(0,0), delete=self.remove_picture)
-                        root.add_widget(picture)
-                        self.testpos +=500
-                    except Exception as e:
-                        Logger.exception('Pictures: Unable to load <%s>' % url)
-                        
+    # The AudioParser calls this function once an image has been found for a keyword
+    @mainthread
+    def audio_completion(self, mic_name, keyword, sentiment, url):
+        try:
+            picture = Picture(source=url, keyword=keyword, sentiment=str(sentiment), mic=mic_name, rotation=randint(-15, 15), pos=(0,0), delete=self.remove_picture)
+            self.pictures.append(picture)
+            self.root.add_widget(picture)
+        except Exception as e:
+            Logger.exception('Pictures: Unable to load <%s>' % url)    
+             
+    # Removes a picture from the screen
     def remove_picture(self, widget):
         # TODO fix button visual
         root = self.root
         root.remove_widget(widget)
     
     def on_start(self):
-        event = Clock.schedule_interval(self.async_images, 0.2)
-        
-        # fetch the image address list and display them
-        # self.async_images()
-
-        # Create audio parser for each mic
-        self.audioParsers = self.create_audio_parsers(MIC_NAMES)
+        pass
                 
     def on_pause(self):
         return True
 
     def on_stop(self):
+        for parser in self.audioParsers:
+            parser.stop_listening()
         os.remove(self.imgList)
 
     # Returns an array of audio parsers 
@@ -136,10 +116,32 @@ class PicturesApp(App):
 
         # Iterates through list of device names we want to use
         for name in deviceList:
-            parser = AudioParser(name)
+            parser = AudioParser(name, self.audio_completion)
             parser.start_listening()
             audioParsers.append(parser)
         return audioParsers
 
+    # Adds a tonne of test pictures to the view. Used for testing purposes
+    def load_pictures(self, filePath):
+        with open(filePath) as f:
+            for line in f:
+                currentLine = line.split("|") # '|' is not used in URLs
+                keyword = currentLine[0]
+                sentiment = currentLine[1]
+                mic = currentLine[2]
+                url = currentLine[3]
+                try:
+                    picture = Picture(keyword=keyword, sentiment=sentiment, mic=mic, source=url, 
+                            rotation=randint(-15, 15), pos=(0,0), delete=self.remove_picture)
+                    self.root.add_widget(picture)
+                except Exception as e:
+                    Logger.exception('Pictures: Unable to load <%s>' % url)
+
+    # Save the current pictures to a file
+    def save_pictures(self, filePath):
+        with open(filePath, 'a') as f:
+            for picture in self.pictures:
+                f.write(picture.keyword + '|' + picture.sentiment + '|' + picture.mic + '|' + picture.source + '\n')
+         
 if __name__ == '__main__':
     PicturesApp().run()
