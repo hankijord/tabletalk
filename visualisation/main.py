@@ -38,14 +38,15 @@ from kivy.properties import NumericProperty
 from kivy.properties import ObjectProperty
 from kivy.clock import Clock, mainthread
 from kivy.uix.button import Button
+from kivy.core.window import Window
 
 from audio import AudioParser
 
 # The list of mic names. These are the exact input names in System Preferences
 # If you want to get the list of input names, run audio.py
-MIC_NAMES = ["Built-in Microph"]
-# MIC_NAMES = ["MOTU Mic 1", "MOTU Mic 2"]
-# MIC_NAMES = ["MOTU Mic 1", "MOTU Mic 2", "MOTU Mic 3", "MOTU Mic 4"]
+# MIC_NAMES = ["Built-in Microph"]
+ROTATION = [0, -90, 180, 90]
+MIC_NAMES = ["MOTU Mic 1", "MOTU Mic 2", "MOTU Mic 3", "MOTU Mic 4"]
 
 class Picture(Scatter):
     '''Picture is the class that will show the image with a white border and a
@@ -62,17 +63,28 @@ class Picture(Scatter):
     sentiment = StringProperty(None)
     mic = StringProperty(None)
 
-    '''
-    def __init__(self, **kwargs):
-        super(Picture, self).__init__(**kwargs)
-        sentiment = int(self.sentiment)
-        if sentiment > 0:
-            green = sentiment
-            red = 0.0
-        else: 
-            red = sentiment
-            green = 0.0
-    '''
+    # Returns the position for a mic name
+    def get_pos(self): 
+        mic_index = MIC_NAMES.index(self.mic)
+        x = 0
+        y = 0
+        padding = 100
+
+        if mic_index == 0:
+            x = Window.width / 2
+            y = self.height / 2 + padding
+        elif mic_index == 1:
+            x = self.height / 2 + padding
+            y = Window.height / 2
+        elif mic_index == 2:
+            x = Window.width / 2
+            y = Window.height - padding - self.height / 2
+        elif mic_index == 3:
+            x = Window.width - padding - self.height / 2
+            y = Window.height / 2
+        else:
+            return
+        return (x, y)
 
 class PicturesApp(App):
     def build(self):
@@ -85,16 +97,19 @@ class PicturesApp(App):
     # The AudioParser calls this function once an image has been found for a keyword
     @mainthread
     def audio_completion(self, mic_name, keyword, sentiment, url):
-        try:
-            picture = Picture(source=url, keyword=keyword, sentiment=str(sentiment), mic=mic_name, rotation=randint(-15, 15), pos=(0,0), delete=self.remove_picture)
+        try: 
+            # Set rotation based on what microphone said it  
+            rotation = ROTATION[MIC_NAMES.index(mic_name)] + randint(-10, 10)  
+            
+            picture = Picture(source=url, keyword=keyword, sentiment=str(sentiment), mic=mic_name, 
+                    rotation=rotation, delete=self.remove_picture)
             self.pictures.append(picture)
             self.root.add_widget(picture)
         except Exception as e:
             Logger.exception('Pictures: Unable to load <%s>' % url)    
-             
+
     # Removes a picture from the screen
     def remove_picture(self, widget):
-        # TODO fix button visual
         root = self.root
         root.remove_widget(widget)
     
@@ -127,11 +142,15 @@ class PicturesApp(App):
                 currentLine = line.split("|") # '|' is not used in URLs
                 keyword = currentLine[0]
                 sentiment = currentLine[1]
-                mic = currentLine[2]
+                mic_name = currentLine[2]
                 url = currentLine[3]
+
+                # Set rotation based on what microphone said it  
+                rotation = ROTATION[MIC_NAMES.index(mic_name)] + randint(-10, 10)
+                
                 try:
-                    picture = Picture(keyword=keyword, sentiment=sentiment, mic=mic, source=url, 
-                            rotation=randint(-15, 15), pos=(0,0), delete=self.remove_picture)
+                    picture = Picture(keyword=keyword, sentiment=sentiment, mic=mic_name, source=url, 
+                            rotation=rotation, delete=self.remove_picture)
                     self.root.add_widget(picture)
                 except Exception as e:
                     Logger.exception('Pictures: Unable to load <%s>' % url)
@@ -141,6 +160,7 @@ class PicturesApp(App):
         with open(filePath, 'a') as f:
             for picture in self.pictures:
                 f.write(picture.keyword + '|' + picture.sentiment + '|' + picture.mic + '|' + picture.source + '\n')
-         
+    
+    
 if __name__ == '__main__':
     PicturesApp().run()
