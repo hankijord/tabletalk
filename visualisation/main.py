@@ -44,8 +44,8 @@ from audio import AudioParser
 # The list of mic names. These are the exact input names in System Preferences
 # If you want to get the list of input names, run audio.py
 
-MIC_NAMES = ["Built-in Microph"]
-# MIC_NAMES = ["MOTU Mic 1", "MOTU Mic 2"]
+#MIC_NAMES = ["Built-in Microph"]
+#MIC_NAMES = ["MOTU Mic 1", "MOTU Mic 2"]
 MIC_NAMES = ["MOTU Mic 1", "MOTU Mic 2", "MOTU Mic 3", "MOTU Mic 4"]
 
 class Picture(Scatter):
@@ -82,6 +82,8 @@ class PicturesApp(App):
         # Holds the Picture objects
         self.pictures = []
         self.load_pictures('test_data.txt')
+        self.clearall = Button(on_press=self.remove_all_pictures, text="Clear All", pos=(0,0), size=(50,200))
+        self.root.add_widget(self.clearall)
 
     # The AudioParser calls this function once an image has been found for a keyword
     @mainthread
@@ -98,6 +100,11 @@ class PicturesApp(App):
         # TODO fix button visual
         root = self.root
         root.remove_widget(widget)
+        
+    def remove_all_pictures(self, *args):
+        root = self.root
+        for picture in self.pictures:
+            root.remove_widget(picture)
     
     def on_start(self):
         pass
