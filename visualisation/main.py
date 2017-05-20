@@ -93,6 +93,8 @@ class PicturesApp(App):
         # Holds the Picture objects
         self.pictures = []
         self.load_pictures('test_data.txt')
+        self.clearall = Button(on_press=self.remove_all_pictures, text="Clear All", pos=(0,0), size=(50,200))
+        self.root.add_widget(self.clearall)
 
     # The AudioParser calls this function once an image has been found for a keyword
     @mainthread
@@ -112,6 +114,11 @@ class PicturesApp(App):
     def remove_picture(self, widget):
         root = self.root
         root.remove_widget(widget)
+        
+    def remove_all_pictures(self, *args):
+        root = self.root
+        for picture in self.pictures:
+            root.remove_widget(picture)
     
     def on_start(self):
         pass
@@ -122,8 +129,6 @@ class PicturesApp(App):
     def on_stop(self):
         for parser in self.audioParsers:
             parser.stop_listening()
-        os.remove(self.imgList)
-
     # Returns an array of audio parsers 
     def create_audio_parsers(self, deviceList):
         audioParsers = []
@@ -160,7 +165,6 @@ class PicturesApp(App):
         with open(filePath, 'a') as f:
             for picture in self.pictures:
                 f.write(picture.keyword + '|' + picture.sentiment + '|' + picture.mic + '|' + picture.source + '\n')
-    
-    
+         
 if __name__ == '__main__':
     PicturesApp().run()
