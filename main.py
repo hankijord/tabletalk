@@ -92,17 +92,17 @@ class Picture(Scatter):
     def get_emoji(self):
         emotion = int(float(self.sentiment) * 100)
         url = ""
-        if -100 <= emotion < -66:
+        if -100 <= emotion <= -66:
             url = "images/neg3.png"
-        elif -66 < emotion < -33:
+        elif -66 < emotion <= -33:
             url = "images/neg2.png"
-        elif -33 < emotion < -10:
+        elif -33 < emotion <= -10:
             url = "images/neg1.png"
-        elif -10 < emotion < 10:
+        elif -10 < emotion <= 10:
             url = "images/neutral.png"
-        elif 10 < emotion < 33:
+        elif 10 < emotion <= 33:
             url = "images/pos1.png"
-        elif 33 < emotion < 66:
+        elif 33 < emotion <= 66:
             url = "images/pos2.png"
         elif 66 < emotion <= 100:
             url = "images/pos3.png"
