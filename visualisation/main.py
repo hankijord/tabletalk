@@ -39,14 +39,15 @@ from kivy.properties import ObjectProperty
 from kivy.clock import Clock, mainthread
 from kivy.uix.button import Button
 from kivy.core.window import Window
+from kivy.uix.image import Image
 
 from audio import AudioParser
 
 # The list of mic names. These are the exact input names in System Preferences
 # If you want to get the list of input names, run audio.py
-# MIC_NAMES = ["Built-in Microph"]
+MIC_NAMES = ["Built-in Microph"]
 ROTATION = [0, -90, 180, 90]
-MIC_NAMES = ["MOTU Mic 1", "MOTU Mic 2", "MOTU Mic 3", "MOTU Mic 4"]
+# MIC_NAMES = ["MOTU Mic 1", "MOTU Mic 2", "MOTU Mic 3", "MOTU Mic 4"]
 
 class Picture(Scatter):
     '''Picture is the class that will show the image with a white border and a
@@ -68,6 +69,7 @@ class Picture(Scatter):
         mic_index = MIC_NAMES.index(self.mic)
         x = 0
         y = 0
+        # The amount of pixels from the edges
         padding = 100
 
         if mic_index == 0:
@@ -86,15 +88,35 @@ class Picture(Scatter):
             return
         return (x, y)
 
+    # Returns the url for the emoji img
+    def get_emoji(self):
+        emotion = int(float(self.sentiment) * 100)
+        url = ""
+        if -100 <= emotion < -66:
+            url = "images/neg3.png"
+        elif -66 < emotion < -33:
+            url = "images/neg2.png"
+        elif -33 < emotion < -10:
+            url = "images/neg1.png"
+        elif -10 < emotion < 10:
+            url = "images/neutral.png"
+        elif 10 < emotion < 33:
+            url = "images/pos1.png"
+        elif 33 < emotion < 66:
+            url = "images/pos2.png"
+        elif 66 < emotion <= 100:
+            url = "images/pos3.png"
+        return url
+
 class PicturesApp(App):
     def build(self):
         # Create audio parser for each mic
         self.audioParsers = self.create_audio_parsers(MIC_NAMES)
         # Holds the Picture objects
         self.pictures = []
-        self.load_pictures('test_data.txt')
+        # self.load_pictures('test_data.txt')
         self.clearall = Button(on_press=self.remove_all_pictures, text="Clear All", pos=(0,0), size=(50,200))
-        self.root.add_widget(self.clearall)
+        # self.root.add_widget(self.clearall)
 
     # The AudioParser calls this function once an image has been found for a keyword
     @mainthread
