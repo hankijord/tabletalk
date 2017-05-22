@@ -1,4 +1,4 @@
-import time, os, webbrowser, sys, pyaudio
+import time, os, webbrowser, sys, pyaudio, random
 from pprint import pprint
 import speech_recognition as sr
 
