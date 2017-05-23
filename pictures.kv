@@ -29,26 +29,25 @@ FloatLayout:
     AsyncImage:
         id: image
         source: root.source
+        pos: (0, -36)
 
         # create initial image to be 400 pixels width
-        size: 800, 800 / self.image_ratio
-
+        size: 500, (500 / self.image_ratio) + 70
         # add shadow background
         canvas.before:
             Color:
                 rgba: (1, 1, 1, 1) 
             BorderImage:
                 source: 'shadow32.png'
-                border: (36,36,36,36)
-                size:(self.width+72, self.height+72)
-                pos: (-36,-36)
+                border: (45, 45, 45, 45)
+                size: (self.width+90, self.height+90)
+                pos: (-45, -45)
     Label:
         text_size: self.size
         size: (root.width, 50)
-        pos: (70, root.height - self.height) 
+        pos: (80, root.height - self.height) 
         color: (0, 0, 0, 1)
         font_name: 'HelveticaNeue.dfont'
-        font_hinting: 'light'
         text: root.keyword
 		
 	Button:
