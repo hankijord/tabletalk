@@ -48,8 +48,8 @@ from audio import AudioParser
 # If you want to get the list of input names, run audio.py
 # MIC_NAMES = ["Built-in Microph"]
 ROTATION = [0, -90, 180, 90]
-# MIC_NAMES = ["MOTU Mic 1", "MOTU Mic 2", "MOTU Mic 3", "MOTU Mic 4"]
-MIC_NAMES = ["Built-in Microphone"]
+MIC_NAMES = ["MOTU Mic 1", "MOTU Mic 2", "MOTU Mic 3", "MOTU Mic 4"]
+#MIC_NAMES = ["Built-in Microphone"]
 
 class Picture(Scatter):
     '''Picture is the class that will show the image with a white border and a
@@ -117,8 +117,8 @@ class PicturesApp(App):
         # Holds the Picture objects
         self.pictures = []
         self.load_pictures('test_data.txt')
-        # self.clearall = Button(on_press=self.remove_all_pictures, text="Clear All", pos=(0,0), size=(50,200))
-        # self.root.add_widget(self.clearall)
+        self.clearall = Button(on_press=self.remove_all_pictures, pos=(0, 0), size=(100, 100), size_hint=(None, None), opacity=0.3, background_normal='images/refresh.png')
+        self.root.add_widget(self.clearall)
 
     # The AudioParser calls this function once an image has been found for a keyword
     @mainthread
@@ -126,7 +126,6 @@ class PicturesApp(App):
         try: 
             # Set rotation based on what microphone said it  
             rotation = ROTATION[MIC_NAMES.index(mic_name)] + randint(-10, 10)  
-            
             picture = Picture(source=url, keyword=keyword, sentiment=str(sentiment), mic=mic_name, 
                     rotation=rotation, delete=self.remove_picture)
             self.pictures.append(picture)
@@ -153,6 +152,7 @@ class PicturesApp(App):
     def on_stop(self):
         for parser in self.audioParsers:
             parser.stop_listening()
+
     # Returns an array of audio parsers 
     def create_audio_parsers(self, deviceList):
         audioParsers = []
@@ -180,6 +180,7 @@ class PicturesApp(App):
                 try:
                     picture = Picture(keyword=keyword, sentiment=sentiment, mic=mic_name, source=url, 
                             rotation=rotation, delete=self.remove_picture)
+                    self.pictures.append(picture)
                     self.root.add_widget(picture)
                 except Exception as e:
                     Logger.exception('Pictures: Unable to load <%s>' % url)

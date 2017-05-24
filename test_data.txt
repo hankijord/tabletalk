@@ -1,4 +1,4 @@
 Macbook Pro|0.5|MOTU Mic 1|http://cdn.images.dailystar.co.uk/dynamic/23/photos/470000/620x/Apple-MacBook-Pro-upgrade-517817.jpg
 puppies|1|MOTU Mic 2|http://cdn2-www.dogtime.com/assets/uploads/gallery/30-impossibly-cute-puppies/impossibly-cute-puppy-8.jpg
-Spiders|-1|MOTU Mic 3|https://cdn.orkin.com/images/spiders/brown-recluse-spider-illustration_1017x605.jpg
-Oranges|0|MOTU Mic 4|http://dingo.care2.com/pictures/greenliving/1249/1248909.large.jpg
+spiders|-1|MOTU Mic 3|http://i1.mirror.co.uk/incoming/article4200837.ece/ALTERNATES/s615b/Tube-Web-spider.jpg
+oranges|0|MOTU Mic 4|http://dingo.care2.com/pictures/greenliving/1249/1248909.large.jpg
