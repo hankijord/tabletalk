@@ -105,22 +105,6 @@ class AudioParser:
         except sr.RequestError as e:
             print(self.name + ": Could not request results from Google Cloud Speech service; {0}".format(e))
     
-    # Checks whether URL is valid
-    def HTTP_code_check(self, url):
-        print('Checking HTTP Code...')
-        print(url)
-        try:
-            a = urllib.urlopen(url)
-            if a.getcode() == 200:
-                print ('link OK!')
-                return True
-            else:
-                print ('link HTTPCode fucked')
-                return False
-        except:
-            print ('link fucked')
-            return False
-    
     def aftermath(self, results):
         keywords = self.analyse_keywords(results)
         sentiment = self.analyse_sentiment(results)
@@ -128,12 +112,9 @@ class AudioParser:
         searcher = Searcher()
         for keyword in keywords:
             imageResults = searcher.searchImages(keyword)
-            imageResults = imageResults[random.randrange(9)]
-            if self.HTTP_code_check(imageResults):
-                url = imageResults
-                self.completionFunction(self.name, keyword, sentiment, url)
-            else:
-                pass
+            imageResults = searcher.validateLinks(imageResults)
+            imageResults = imageResults[random.randrange(len(imageResults))]
+            self.completionFunction(self.name, keyword, sentiment, imageResults)
         
 def print_input_list():
     print "Input List:"

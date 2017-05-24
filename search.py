@@ -38,6 +38,29 @@ class Searcher:
         for item in results["items"]:
             imgLinks.append(item["link"])
         return imgLinks
+    
+    # validate result links
+    def validateLinks(self, results):
+        approved = ('jpeg', 'png', 'png')
+        validated = []
+        for i in results:
+            valid = True
+            try:
+                url = urllib.urlopen(i)
+            except:
+                valid = False
+            if url.getcode() != 200:
+                valid = False
+            info = url.info()
+            if info.subtype not in approved:
+                valid = False
+            if valid: 
+                validated.append(i)
+                print("link OK!")
+            else:
+                print("link fucked!")
+        
+        return validated
 
     # Download the image to img folder
     def downloadImages(self, imageLink, term):
