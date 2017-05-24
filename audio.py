@@ -113,7 +113,6 @@ class AudioParser:
         for keyword in keywords:
             imageResults = searcher.searchImages(keyword)
             imageResults = searcher.validateLinks(imageResults)
-            imageResults = imageResults[random.randrange(len(imageResults))]
             self.completionFunction(self.name, keyword, sentiment, imageResults)
         
 def print_input_list():
