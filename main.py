@@ -28,6 +28,7 @@ kivy.require('1.0.6')
 
 from glob import glob
 import os
+import random
 from random import randint
 from os.path import join, dirname
 from kivy.app import App
@@ -46,7 +47,8 @@ from audio import AudioParser
 # If you want to get the list of input names, run audio.py
 # MIC_NAMES = ["Built-in Microph"]
 ROTATION = [0, -90, 180, 90]
-MIC_NAMES = ["MOTU Mic 1", "MOTU Mic 2", "MOTU Mic 3", "MOTU Mic 4"]
+# MIC_NAMES = ["MOTU Mic 1", "MOTU Mic 2", "MOTU Mic 3", "MOTU Mic 4"]
+MIC_NAMES = ["Built-in Microphone"]
 
 class Picture(Scatter):
     '''Picture is the class that will show the image with a white border and a
@@ -93,8 +95,8 @@ class PicturesApp(App):
         # Holds the Picture objects
         self.pictures = []
         self.load_pictures('test_data.txt')
-        self.clearall = Button(on_press=self.remove_all_pictures, text="Clear All", pos=(0,0), size=(50,200))
-        self.root.add_widget(self.clearall)
+        # self.clearall = Button(on_press=self.remove_all_pictures, text="Clear All", pos=(0,0), size=(50,200))
+        # self.root.add_widget(self.clearall)
 
     # The AudioParser calls this function once an image has been found for a keyword
     @mainthread

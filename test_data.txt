@@ -1,4 +1,4 @@
-keyword 1|0.3|MOTU Mic 1|http://cdn.images.dailystar.co.uk/dynamic/23/photos/470000/620x/Apple-MacBook-Pro-upgrade-517817.jpg
-keyword 2|0.3|MOTU Mic 2|http://whenelephantsfly.files.wordpress.com/2010/11/apple-orange-636.jpg
-keyword 3|0.3|MOTU Mic 3|http://cdn.images.dailystar.co.uk/dynamic/23/photos/470000/620x/Apple-MacBook-Pro-upgrade-517817.jpg
-keyword 4|0.3|MOTU Mic 4|http://cdn.images.dailystar.co.uk/dynamic/23/photos/470000/620x/Apple-MacBook-Pro-upgrade-517817.jpg
+keyword 1|0.3|Built-in Microphone|http://cdn.images.dailystar.co.uk/dynamic/23/photos/470000/620x/Apple-MacBook-Pro-upgrade-517817.jpg
+keyword 2|0.3|Built-in Microphone|http://whenelephantsfly.files.wordpress.com/2010/11/apple-orange-636.jpg
+keyword 3|0.3|Built-in Microphone|http://cdn.images.dailystar.co.uk/dynamic/23/photos/470000/620x/Apple-MacBook-Pro-upgrade-517817.jpg
+keyword 4|0.3|Built-in Microphone|http://cdn.images.dailystar.co.uk/dynamic/23/photos/470000/620x/Apple-MacBook-Pro-upgrade-517817.jpg

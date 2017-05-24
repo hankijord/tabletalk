@@ -1,4 +1,4 @@
-import time, os, webbrowser, sys, pyaudio
+import time, os, webbrowser, sys, pyaudio, random
 from pprint import pprint
 import speech_recognition as sr
 
@@ -42,7 +42,7 @@ class AudioParser:
         print("Started listening through " + self.name + "...")
     
         # Starts listening in another thread, use self.stop_listening() to stop
-        self.stop_listening = self.recogniser.listen_in_background(self.microphone, self.callback)
+        self.stop_listening = self.recogniser.listen_in_background(self.microphone, self.threaded_callback, 0.2)
     
     # Used to recalibrate the microphone for ambient noise, listens to ambient noise for 1 second
     def recalibrate_ambient(self): 
@@ -80,6 +80,9 @@ class AudioParser:
 
         print(self.name + ": Google thinks what you said was "+str(percentage)+"% "+emotion) 
         return sentiment.score 
+    
+    def threaded_callback(self, recognizer, audio):
+        thread.start_new_thread(self.callback, (recognizer,audio))
     
     # A callback to analyse the speech to text
     def callback(self, recognizer, audio):
