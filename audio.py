@@ -24,6 +24,10 @@ class AudioParser:
     def __init__(self, inputName, completionFunction):
         self.recogniser = sr.Recognizer()
         self.completionFunction = completionFunction
+        
+        # Set thresholds for continuous use
+        self.recogniser.pause_threshold = 0.2
+        self.recogniser.non_speaking_duration = 0.1
 
         # Initiates a microphone from its name 
         for i, mic_name in enumerate(sr.Microphone.list_microphone_names()):
@@ -42,10 +46,13 @@ class AudioParser:
         print("Started listening through " + self.name + "...")
     
         # Starts listening in another thread, use self.stop_listening() to stop
-        self.stop_listening = self.recogniser.listen_in_background(self.microphone, self.threaded_callback, 0.2)
+        # TODO: check recogniser on mac mini to actually pass the phrase_time_limit to the listen
+        
+        self.stop_listening = self.recogniser.listen_in_background(self.microphone, self.threaded_callback, 50)
     
     # Used to recalibrate the microphone for ambient noise, listens to ambient noise for 1 second
     def recalibrate_ambient(self): 
+        print("Recalibrating..")
         with self.microphone as source:
             self.recogniser.adjust_for_ambient_noise(source)
 
