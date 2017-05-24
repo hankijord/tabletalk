@@ -8,7 +8,7 @@ FloatLayout:
             rgb: 1, 1, 1
         Rectangle:
             source: 'data/images/background.jpg'
-            size: self.size
+            size: self.size 
 
     BoxLayout:
         padding: 10
@@ -16,12 +16,7 @@ FloatLayout:
         size_hint: 1, None
         pos_hint: {'top': 1}
         height: 44
-        Label:
-            height: 24
-            text_size: self.width, None
-            color: (1, 1, 1, .8)
-            text: 'TableTalk Prototype'
-
+    
 <Picture>:
     # each time a picture is created, the image can delay the loading
     # as soon as the image is loaded, ensure that the center is changed
@@ -34,31 +29,35 @@ FloatLayout:
     AsyncImage:
         id: image
         source: root.source
+        pos: (0, -36)
 
         # create initial image to be 400 pixels width
-        size: 800, 800 / self.image_ratio
-
+        size: 500, (500 / self.image_ratio) + 70
         # add shadow background
         canvas.before:
             Color:
                 rgba: (1, 1, 1, 1) 
             BorderImage:
                 source: 'shadow32.png'
-                border: (36,36,36,36)
-                size:(self.width+72, self.height+72)
-                pos: (-36,-36)
+                border: (45, 45, 45, 45)
+                size: (self.width+90, self.height+90)
+                pos: (-45, -45)
     Label:
         text_size: self.size
         size: (root.width, 50)
-        pos: (10, 10) 
+        pos: (80, root.height - self.height) 
         color: (0, 0, 0, 1)
-        text: root.keyword + ", " + root.sentiment + ", " + root.mic
+        font_name: 'HelveticaNeue-Light.ttf'
+        text: root.keyword
 		
 	Button:
-		text: 'x'
-		font_size: 48
-		size: self.texture_size
-        background_color: (1, 0, 0, 1)
-		color: (0, 0, 0, 1)
+        background_normal: 'images/delete.png'
+		size: (50, 50) 
+        border: (0, 0, 0, 0)
 		on_press: root.delete(widget=root)
-        pos: (0, root.height - self.height)
+        pos: (25 + root.width - self.width, 25 + root.height - self.height)
+
+    Image:
+        source: root.get_emoji() 
+        size: (50, 50)
+        pos: (10, root.height - self.height - 10)
