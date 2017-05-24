@@ -117,7 +117,11 @@ class PicturesApp(App):
         # Holds the Picture objects
         self.pictures = []
         self.load_pictures('test_data.txt')
+<<<<<<< HEAD
         # self.clearall = Button(on_press=self.remove_all_pictures, text="Clear All", pos=(0,0), size=(50,200))
+=======
+        self.clearall = Button(on_press=self.remove_all_pictures, text="Clear All", pos=(0,0), size=(50,200))
+>>>>>>> a01216e2a08e6926d9706e1da73661cd218917b7
         # self.root.add_widget(self.clearall)
 
     # The AudioParser calls this function once an image has been found for a keyword
