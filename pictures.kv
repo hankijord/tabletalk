@@ -7,7 +7,7 @@ FloatLayout:
         Color:
             rgb: 1, 1, 1
         Rectangle:
-            source: 'data/images/background.jpg'
+            source: 'images/background.png'
             size: self.size 
 
     BoxLayout:
@@ -29,7 +29,8 @@ FloatLayout:
     AsyncImage:
         id: image
         source: root.source
-        pos: (0, -36)
+        # pos: (0, -36)
+        pos: (0, 36)
 
         # create initial image to be 400 pixels width
         size: 500, (500 / self.image_ratio) + 70
@@ -45,7 +46,8 @@ FloatLayout:
     Label:
         text_size: self.size
         size: (root.width, 50)
-        pos: (80, root.height - self.height) 
+        #pos: (80, root.height - self.height) 
+        pos: (10, 15) 
         color: (0, 0, 0, 1)
         font_name: 'HelveticaNeue-Light.ttf'
         text: root.keyword
@@ -55,9 +57,10 @@ FloatLayout:
 		size: (50, 50) 
         border: (0, 0, 0, 0)
 		on_press: root.delete(widget=root)
-        pos: (25 + root.width - self.width, 25 + root.height - self.height)
+        pos: (36 + root.width - self.width, 36 + root.height - self.height)
 
     Image:
         source: root.get_emoji() 
         size: (50, 50)
-        pos: (10, root.height - self.height - 10)
+        pos: (root.width - self.width - 10, 5)
+        # pos: (10, root.height - self.height - 10)
