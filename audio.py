@@ -24,6 +24,10 @@ class AudioParser:
     def __init__(self, inputName, completionFunction):
         self.recogniser = sr.Recognizer()
         self.completionFunction = completionFunction
+        
+        # Set thresholds for continuous use
+        self.recogniser.pause_threshold = 0.2
+        self.recogniser.non_speaking_duration = 0.1
 
         # Initiates a microphone from its name 
         for i, mic_name in enumerate(sr.Microphone.list_microphone_names()):
@@ -42,10 +46,13 @@ class AudioParser:
         print("Started listening through " + self.name + "...")
     
         # Starts listening in another thread, use self.stop_listening() to stop
-        self.stop_listening = self.recogniser.listen_in_background(self.microphone, self.threaded_callback, 0.2)
+        # TODO: check recogniser on mac mini to actually pass the phrase_time_limit to the listen
+        
+        self.stop_listening = self.recogniser.listen_in_background(self.microphone, self.threaded_callback, 50)
     
     # Used to recalibrate the microphone for ambient noise, listens to ambient noise for 1 second
     def recalibrate_ambient(self): 
+        print("Recalibrating..")
         with self.microphone as source:
             self.recogniser.adjust_for_ambient_noise(source)
 
@@ -98,22 +105,6 @@ class AudioParser:
         except sr.RequestError as e:
             print(self.name + ": Could not request results from Google Cloud Speech service; {0}".format(e))
     
-    # Checks whether URL is valid
-    def HTTP_code_check(self, url):
-        print('Checking HTTP Code...')
-        print(url)
-        try:
-            a = urllib.urlopen(url)
-            if a.getcode() == 200:
-                print ('link OK!')
-                return True
-            else:
-                print ('link HTTPCode fucked')
-                return False
-        except:
-            print ('link fucked')
-            return False
-    
     def aftermath(self, results):
         keywords = self.analyse_keywords(results)
         sentiment = self.analyse_sentiment(results)
@@ -121,12 +112,9 @@ class AudioParser:
         searcher = Searcher()
         for keyword in keywords:
             imageResults = searcher.searchImages(keyword)
-            imageResults = imageResults[random.randrange(9)]
-            if self.HTTP_code_check(imageResults):
-                url = imageResults
-                self.completionFunction(self.name, keyword, sentiment, url)
-            else:
-                pass
+            imageResults = searcher.validateLinks(imageResults)
+            imageResults = imageResults[random.randrange(len(imageResults))]
+            self.completionFunction(self.name, keyword, sentiment, imageResults)
         
 def print_input_list():
     print "Input List:"
