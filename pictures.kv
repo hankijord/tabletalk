@@ -29,7 +29,6 @@ FloatLayout:
     AsyncImage:
         id: image
         source: root.source
-        # pos: (0, -36)
         pos: (0, 36)
 
         # create initial image to be 400 pixels width
@@ -46,21 +45,20 @@ FloatLayout:
     Label:
         text_size: self.size
         size: (root.width, 50)
-        #pos: (80, root.height - self.height) 
         pos: (10, 15) 
         color: (0, 0, 0, 1)
         font_name: 'HelveticaNeue-Light.ttf'
         text: root.keyword
 		
-	Button:
+	Image:
+        source: root.get_emoji() 
+        size: (50, 50)
+        pos: (root.width - self.width - 10, 5)
+
+    Button:
         background_normal: 'images/delete.png'
 		size: (50, 50) 
         border: (0, 0, 0, 0)
 		on_press: root.delete(widget=root)
         pos: (36 + root.width - self.width, 36 + root.height - self.height)
 
-    Image:
-        source: root.get_emoji() 
-        size: (50, 50)
-        pos: (root.width - self.width - 10, 5)
-        # pos: (10, root.height - self.height - 10)
