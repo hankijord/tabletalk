@@ -106,9 +106,11 @@ class AudioParser:
             print(self.name + ": Could not request results from Google Cloud Speech service; {0}".format(e))
     
     def aftermath(self, results):
-        keywords = self.analyse_keywords(results)
-        sentiment = self.analyse_sentiment(results)
-        
+        try:
+            keywords = self.analyse_keywords(results)
+            sentiment = self.analyse_sentiment(results)
+        except Exception as e:
+            print(e)
         searcher = Searcher()
         for keyword in keywords:
             imageResults = searcher.searchImages(keyword)

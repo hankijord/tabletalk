@@ -41,28 +41,30 @@ class Searcher:
     
     # validate result links
     def validateLinks(self, results):
-        approved = ('jpeg', 'png', 'png')
+        approved = ('jpeg', 'png', 'gif')
         for a in range(9):
             i = results.pop(random.randrange(len(results)))
             valid = True
+            warning = 'link fucked!\t'
             try:
                 url = urllib.urlopen(i)
-            except Excetion as e:
+            except Exception as e:
                 print(e)
                 valid = False
             if url.getcode() != 200:
-                print(url.getcode())
+                warning += str(url.getcode()) + '\t'
                 valid = False
             info = url.info()
             if info.subtype not in approved:
-                print(info.subtype)
+                warning += str(info.subtype) + '\t'
                 valid = False
             if valid: 
                 print("link OK!")
                 print(i)
                 return i
             else:
-                print("link fucked!")
+                print(warning)
+                #print("link fucked!")
         print("No valid link. The world is a cruel place indeed.")
         
 
