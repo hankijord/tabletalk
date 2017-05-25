@@ -22,7 +22,11 @@ FloatLayout:
     # as soon as the image is loaded, ensure that the center is changed
     # to the center of the screen.
 
-    on_size: self.center = self.get_pos()
+    # set initial position    
+    center: self.get_pos(-1000) 
+
+    # set position after image has loaded
+    on_size: self.animate_to_pos() 
     size: image.size
     size_hint: None, None
 

@@ -41,6 +41,7 @@ from kivy.clock import Clock, mainthread
 from kivy.uix.button import Button
 from kivy.core.window import Window
 from kivy.uix.image import Image
+from kivy.animation import Animation 
 
 from audio import AudioParser
 
@@ -66,13 +67,12 @@ class Picture(Scatter):
     sentiment = StringProperty(None)
     mic = StringProperty(None)
 
-    # Returns the position for a mic name
-    def get_pos(self): 
+    # Returns the position for a mic name.
+    # Padding is the amount of pixels between the image and the edge
+    def get_pos(self, padding): 
         mic_index = MIC_NAMES.index(self.mic)
         x = 0
         y = 0
-        # The amount of pixels from the edges
-        padding = 100
 
         if mic_index == 0:
             x = Window.width / 2
@@ -89,6 +89,12 @@ class Picture(Scatter):
         else:
             return
         return (x, y)
+    
+    # Animates the image once its loaded to move in
+    def animate_to_pos(self):
+        animation = Animation(center=self.get_pos(100), t='in_out_back')
+        animation.start(self)
+        return
 
     # Returns the url for the emoji img
     def get_emoji(self):
@@ -114,10 +120,11 @@ class PicturesApp(App):
     def build(self):
         # Create audio parser for each mic
         self.audioParsers = self.create_audio_parsers(MIC_NAMES)
+
         # Holds the Picture objects
         self.pictures = []
         self.load_pictures('test_data.txt')
-        self.clearall = Button(on_press=self.remove_all_pictures, pos=(0, 0), size=(100, 100), size_hint=(None, None), opacity=0.3, background_normal='images/refresh.png')
+        self.clearall = Button(on_press=self.reset, pos=(0, 0), size=(100, 100), size_hint=(None, None), opacity=0.3, background_normal='images/refresh.png')
         self.root.add_widget(self.clearall)
 
     # The AudioParser calls this function once an image has been found for a keyword
@@ -138,7 +145,16 @@ class PicturesApp(App):
         root = self.root
         root.remove_widget(widget)
         
-    def remove_all_pictures(self, *args):
+    # Removes all pictures and restarts the listening of audio devices
+    def reset(self, *args):
+        # Restart audio listening
+        '''
+        for parser in self.audioParsers:
+            parser.stop_listening()
+            parser.start_listening()
+        '''
+
+        # Remove pictures from view
         root = self.root
         for picture in self.pictures:
             root.remove_widget(picture)
