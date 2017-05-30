@@ -27,7 +27,8 @@ FloatLayout:
 
     # set position after image has loaded
     on_size: self.animate_to_pos() 
-    size: image.size
+    size: (image.size[0] + 36, image.size[1] + 36)
+    # size: image.size
     size_hint: None, None
 
     AsyncImage:
@@ -48,7 +49,9 @@ FloatLayout:
                 pos: (-45, -45)
     Label:
         text_size: self.size
-        size: (root.width, 50)
+		font_size: '30sp'
+		size: (root.width, 50)
+		size_hint: None, None
         pos: (10, 15) 
         color: (0, 0, 0, 1)
         font_name: 'HelveticaNeue-Light.ttf'
@@ -57,12 +60,11 @@ FloatLayout:
 	Image:
         source: root.get_emoji() 
         size: (50, 50)
-        pos: (root.width - self.width - 10, 5)
+        pos: (root.width - self.width - 40, 5)
 
     Button:
-        background_normal: 'images/delete.png'
-		size: (50, 50) 
-        border: (0, 0, 0, 0)
+		background_normal: 'images/delete.png'
+		size: (50, 50)
+		border: (0, 0, 0, 0)
 		on_press: root.delete(widget=root)
-        pos: (36 + root.width - self.width, 36 + root.height - self.height)
-
+		pos: (root.width - self.width, root.height - self.height)

@@ -31,6 +31,7 @@ import os
 import random
 from random import randint
 from os.path import join, dirname
+from kivy.config import Config
 from kivy.app import App
 from kivy.logger import Logger
 from kivy.uix.scatter import Scatter
@@ -118,12 +119,15 @@ class Picture(Scatter):
 
 class PicturesApp(App):
     def build(self):
-        # Create audio parser for each mic
+        # config TUIO
+	Config.set('input','multitouchscreen','tuio,127.0.0.1:3000')
+	
+	# Create audio parser for each mic
         self.audioParsers = self.create_audio_parsers(MIC_NAMES)
 
         # Holds the Picture objects
         self.pictures = []
-        self.load_pictures('test_data.txt')
+        # self.load_pictures('test_data.txt')
         self.clearall = Button(on_press=self.reset, pos=(0, 0), size=(100, 100), size_hint=(None, None), opacity=0.3, background_normal='images/refresh.png')
         self.root.add_widget(self.clearall)
 
@@ -133,8 +137,8 @@ class PicturesApp(App):
         try: 
             # Set rotation based on what microphone said it  
             rotation = ROTATION[MIC_NAMES.index(mic_name)] + randint(-10, 10)  
-            picture = Picture(source=url, keyword=keyword, sentiment=str(sentiment), mic=mic_name, 
-                    rotation=rotation, delete=self.remove_picture)
+            picture = Picture(source=url, keyword=keyword, sentiment=str(sentiment), 
+            mic=mic_name, rotation=rotation, delete=self.remove_picture)
             self.pictures.append(picture)
             self.root.add_widget(picture)
         except Exception as e:
