@@ -45,7 +45,7 @@ class Searcher:
         for a in range(9):
             i = results.pop(random.randrange(len(results)))
             valid = True
-            warning = 'link fucked!\t'
+            warning = 'link unavailable!\t'
             try:
                 url = urllib.urlopen(i)
             except Exception as e:

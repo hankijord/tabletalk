@@ -49,8 +49,12 @@ from audio import AudioParser
 # The list of mic names. These are the exact input names in System Preferences
 # If you want to get the list of input names, run audio.py
 # MIC_NAMES = ["Built-in Microph"]
-ROTATION = [0, -90, 180, 90]
-MIC_NAMES = ["MOTU Mic 1", "MOTU Mic 2", "MOTU Mic 3", "MOTU Mic 4"]
+# UQ open day demo settings
+MIC_NAMES = ["Scarlett2i2 1", "Scarlett2i2 2"]
+ROTATION = [45, 225, 180, 90]
+
+#ROTATION = [0, -90, 180, 90]
+#MIC_NAMES = ["MOTU Mic 1", "MOTU Mic 2", "MOTU Mic 3", "MOTU Mic 4"]
 #MIC_NAMES = ["Built-in Microphone"]
 
 class Picture(Scatter):
@@ -76,11 +80,11 @@ class Picture(Scatter):
         y = 0
 
         if mic_index == 0:
-            x = Window.width / 2
+            x = Window.width / 4 * 3
             y = self.height / 2 + padding
         elif mic_index == 1:
-            x = self.height / 2 + padding
-            y = Window.height / 2
+            x = Window.width / 4
+            y = Window.height - padding - self.height / 2
         elif mic_index == 2:
             x = Window.width / 2
             y = Window.height - padding - self.height / 2
